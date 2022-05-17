@@ -83,7 +83,6 @@ function interpretFlop(input) {
 
 function searchVar(variableName, varArray) {
     for (let i = 0; i < varArray.length; i++) {
-        console.log(varArray[i].name + variableName);
         if (varArray[i].name === variableName) {
             return i;
         }
