@@ -64,7 +64,7 @@ function interpretFlop(input) {
                     if (index !== -1) {
                         value += vars[index].value + " ";
                     } else if (line[i] === "expr") {
-                        tempOut += evalExpr(line.slice(i + 1, line.length), vars) + " ";
+                        value += evalExpr(line.slice(i + 1, line.length), vars) + " ";
                         break;
                     } else {
                         value += line[i] + " ";
