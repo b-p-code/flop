@@ -34,14 +34,21 @@ function interpretFlop(input) {
         let line = lines[i].split(" ");
         switch (line[0]) {
             case "say":
+                let tempOut = "";
+
                 for (let i = 1; i < line.length; i++) {
                     let index = searchVar(line[i], vars);
+                    console.log(index);
                     if (index !== -1) {
-                        output += vars[i].value + " ";
+                        tempOut += vars[index].value + " ";
                     } else {
-                        output += line[i] + " ";
+                        tempOut += line[i] + " ";
                     }
                 }
+
+                output += tempOut;
+                console.log("Saying " + tempOut);
+
                 break;
             case "flop":
                 for (let i = 2; i < line.length; i++) {
@@ -71,7 +78,8 @@ function interpretFlop(input) {
 }
 
 function searchVar(variableName, varArray) {
-    for (let i = 0; i < varArray.length - 1; i++) {
+    for (let i = 0; i < varArray.length; i++) {
+        console.log(varArray[i].name + variableName);
         if (varArray[i].name === variableName) {
             return i;
         }
