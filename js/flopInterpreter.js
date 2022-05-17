@@ -46,7 +46,9 @@ function interpretFlop(input) {
                     }
                 }
 
-                output += tempOut;
+                tempOut = tempOut.trim();
+
+                output += tempOut + " \n";
                 console.log("Saying " + tempOut);
 
                 break;
@@ -54,11 +56,13 @@ function interpretFlop(input) {
                 for (let i = 2; i < line.length; i++) {
                     let index = searchVar(line[i], vars);
                     if (index !== -1) {
-                        value += vars[i].value + " ";
+                        value += vars[index].value + " ";
                     } else {
                         value += line[i] + " ";
                     }
                 }
+
+                value = value.trim();
 
                 let variable = { name: line[1], value: value };
 
