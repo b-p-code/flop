@@ -8,6 +8,19 @@ function setupCodeMirror() {
     });
 
     editor.setOption('theme', 'cobalt');
+
+    editor.setOption("value",
+        "# Example Flop Program\n" +
+        "\n" +
+        "flop myVar 3\n" +
+        "flop myOtherVar 2\n" +
+        "\n" +
+        "say Well, here is some math!\n" +
+        "say 3 + 2 is expr myVar + myOtherVar\n" +
+        "say 3 - 2 is expr myVar - myOtherVar\n" +
+        "say 3 * 2 is expr myVar * myOtherVar\n" +
+        "say 3 / 2 is expr myVar / myOtherVar"
+    );
 }
 
 function run() {
@@ -36,6 +49,7 @@ function interpretFlop(input) {
         // Check commands
         switch (line[0]) {
             case "":
+            case "#":
                 break;
             case "say":
                 let tempOut = "";
