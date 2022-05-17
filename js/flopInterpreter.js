@@ -30,11 +30,13 @@ function interpretFlop(input) {
     let output = "";
     let vars = [];
     let i = 0;
-    while (lines[i]) {
+    while (lines[i] !== null) {
         let line = lines[i].split(" ");
 
         // Check commands
         switch (line[0]) {
+            case "":
+                break;
             case "say":
                 let tempOut = "";
 
@@ -80,6 +82,7 @@ function interpretFlop(input) {
                 break;
             default:
                 output = "Error at line " + (i + 1);
+                return;
         }
         i++;
     }
