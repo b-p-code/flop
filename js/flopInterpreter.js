@@ -12,16 +12,16 @@ function setupCodeMirror() {
 
 function run() {
     let text = editor.getValue();
-
-    if(!text || text === "") {
-        console.log("error");
-    } else {
-        interpretFlop(text);
-    }
+    interpretFlop(text);
 }
 
 function interpretFlop(input) {
     let cout = document.getElementById("output");
+
+    if (!input || input === "") {
+        cout.value = "Error";
+        return;
+    }
 
     let lines = input.split(/\r?\n/);
     lines.push(null);
@@ -32,15 +32,19 @@ function interpretFlop(input) {
     let i = 0;
     while (lines[i]) {
         let line = lines[i].split(" ");
+
+        // Check commands
         switch (line[0]) {
             case "say":
                 let tempOut = "";
 
                 for (let i = 1; i < line.length; i++) {
                     let index = searchVar(line[i], vars);
-                    console.log(index);
                     if (index !== -1) {
                         tempOut += vars[index].value + " ";
+                    } else if (line[i] === "expr") {
+                        tempOut += evalExpr(line.slice(i + 1, line.length), vars) + " ";
+                        break;
                     } else {
                         tempOut += line[i] + " ";
                     }
@@ -57,6 +61,9 @@ function interpretFlop(input) {
                     let index = searchVar(line[i], vars);
                     if (index !== -1) {
                         value += vars[index].value + " ";
+                    } else if (line[i] === "expr") {
+                        tempOut += evalExpr(line.slice(i + 1, line.length), vars) + " ";
+                        break;
                     } else {
                         value += line[i] + " ";
                     }
@@ -90,3 +97,52 @@ function searchVar(variableName, varArray) {
 
     return -1;
 }
+
+function evalExpr(array, vars) {
+    console.log(array);
+
+    let index = searchVar(array[0], vars);
+    let num = array[0];
+    if (index !== -1) {
+        num = vars[index].value;
+    }
+
+    let result = Number(num);
+
+    if (isNaN(result)) {
+        return "N/A";
+    }
+
+    for (let i = 0; i < array.length - 2; i+=2) {
+        let index = searchVar(array[i + 2], vars);
+        let num = array[i + 2];
+        if (index !== -1) {
+            num = vars[index].value;
+        }
+        num = Number(num);
+        if (isNaN(num)) {
+            return "N/A";
+            break;
+        }
+        switch (array[i + 1]) {
+            case "+":
+                result += num;
+                break;
+            case "-":
+                result -= num;
+                break;
+            case "/":
+                result /= num;
+                break;
+            case "*":
+                result *= num;
+                break;
+            default:
+                return "N/A";
+                break;
+        }
+    }
+
+    return result;
+}
+
