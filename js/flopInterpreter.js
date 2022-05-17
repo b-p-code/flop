@@ -26,23 +26,56 @@ function interpretFlop(input) {
     let lines = input.split(/\r?\n/);
     lines.push(null);
 
-    console.log(lines);
-
+    let value = "";
+    let output = "";
+    let vars = [];
     let i = 0;
     while (lines[i]) {
-        let output = "";
         let line = lines[i].split(" ");
         switch (line[0]) {
             case "say":
                 for (let i = 1; i < line.length; i++) {
-                    output += line[i] + " ";
+                    let index = searchVar(line[i], vars);
+                    if (index !== -1) {
+                        output += vars[i].value + " ";
+                    } else {
+                        output += line[i] + " ";
+                    }
                 }
-                cout.value = output;
-                output = "";
+                break;
+            case "flop":
+                for (let i = 2; i < line.length; i++) {
+                    let index = searchVar(line[i], vars);
+                    if (index !== -1) {
+                        value += vars[i].value + " ";
+                    } else {
+                        value += line[i] + " ";
+                    }
+                }
+
+                let variable = { name: line[1], value: value };
+
+                vars.push(variable);
+                value = "";
+                console.log("Assigning variable " + variable.name + " to value " + variable.value);
+
                 break;
             default:
-                cout.value = "error at line " + (i + 1);
+                output = "Error at line " + (i + 1);
         }
         i++;
     }
+
+    cout.value = output;
+    output = "";
+}
+
+function searchVar(variableName, varArray) {
+    for (let i = 0; i < varArray.length - 1; i++) {
+        if (varArray[i].name === variableName) {
+            return i;
+        }
+    }
+
+    return -1;
 }
