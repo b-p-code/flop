@@ -190,7 +190,6 @@ function interpretFlop(input) {
             default:
                 stop = true;
                 output = "Error at line " + (i + 1);
-                return;
         }
         i++;
     }
