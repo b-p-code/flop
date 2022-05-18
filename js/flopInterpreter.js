@@ -9,6 +9,25 @@
 // This is merely meant to be a fun side project
 /***********************/
 
+/***** FLOP COMMANDS *****/
+// say:
+// This command outputs to the window below
+// Ex: say hello my friend!
+// Output: hello my friend!
+
+// flop:
+// This command declares a variable
+// Ex: flop myVar value
+// Now a variable called myVar exists with the value "value"
+
+// expr:
+// This command evaluates an expression
+// It cannot stand alone as a statement
+// It has many limitations - the expressions are evaluated without precedence, from left to right
+// Ex: say expr 1 + 2
+// Output: 3
+/*************************/
+
 /***** COPYRIGHT *****/
 // Copyright 2022 Bryce Paubel
 /*********************/
