@@ -10,6 +10,8 @@
 /***********************/
 
 /***** FLOP COMMANDS *****/
+// Note - all of these commands use nonstandard names
+
 // say:
 // This command outputs to the window below
 // Ex: say hello my friend!
@@ -17,8 +19,14 @@
 
 // flop:
 // This command declares a variable
+// If no value is given it is defaulted to ""
 // Ex: flop myVar value
 // Now a variable called myVar exists with the value "value"
+
+// give:
+// Assigns a variable a value (assuming it has been declared)
+// Ex: give myVar 3
+// Now the previously existing myVar holds the value 3
 
 // expr:
 // This command evaluates an expression
@@ -90,11 +98,12 @@ function interpretFlop(input) {
     let lines = input.split(/\r?\n/);
     lines.push(null);
 
+    let stop = false;
     let value = "";
     let output = "";
     let vars = [];
     let i = 0;
-    while (lines[i] !== null) {
+    while (lines[i] !== null && !stop) {
         let line = lines[i].split(" ");
 
         // Check commands
@@ -124,28 +133,62 @@ function interpretFlop(input) {
 
                 break;
             case "flop":
-                for (let i = 2; i < line.length; i++) {
-                    let index = searchVar(line[i], vars);
-                    if (index !== -1) {
-                        value += vars[index].value + " ";
-                    } else if (line[i] === "expr") {
-                        value += evalExpr(line.slice(i + 1, line.length), vars) + " ";
-                        break;
-                    } else {
-                        value += line[i] + " ";
+                if (searchVar(line[1], vars) === -1) {
+                    for (let i = 2; i < line.length; i++) {
+                        let index = searchVar(line[i], vars);
+                        if (index !== -1) {
+                            value += vars[index].value + " ";
+                        } else if (line[i] === "expr") {
+                            value += evalExpr(line.slice(i + 1, line.length), vars) + " ";
+                            break;
+                        } else {
+                            value += line[i] + " ";
+                        }
                     }
+
+                    value = value.trim();
+
+                    let variable = { name: line[1], value: value };
+
+                    vars.push(variable);
+                    value = "";
+                    console.log("Initializing and assigning variable " + variable.name + " to value " + variable.value);
+                } else {
+                    stop = true;
+                    output = "Error at line " + (i + 1) + ". " + line[1] + " already exists.";
+                    break;
                 }
+                break;
+            case "give":
+                let varIndex = searchVar(line[1], vars);
+                console.log(varIndex);
+                if (varIndex !== -1) {
+                    for (let i = 2; i < line.length; i++) {
+                        let index = searchVar(line[i], vars);
+                        if (index !== -1) {
+                            value += vars[index].value + " ";
+                        } else if (line[i] === "expr") {
+                            value += evalExpr(line.slice(i + 1, line.length), vars) + " ";
+                            break;
+                        } else {
+                            value += line[i] + " ";
+                        }
+                    }
 
-                value = value.trim();
+                    value = value.trim();
 
-                let variable = { name: line[1], value: value };
+                    vars[varIndex].value = value;
 
-                vars.push(variable);
-                value = "";
-                console.log("Assigning variable " + variable.name + " to value " + variable.value);
-
+                    value = "";
+                    console.log("Assigning variable " + vars[varIndex].name + " to value " + vars[varIndex].value);
+                } else {
+                    stop = true;
+                    output = "Error at line " + (i + 1) + ". " + line[1] + " does not exist.";
+                    break;
+                }
                 break;
             default:
+                stop = true;
                 output = "Error at line " + (i + 1);
                 return;
         }
